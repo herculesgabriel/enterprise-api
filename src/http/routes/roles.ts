@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { ensureAdmin, ensureAuthenticated } from '../../middlewares';
+import { ensureAuthenticated, ensureHasPermission } from '../../middlewares';
 import { createRoleValidation } from '../../middlewares/validation';
 import {
   CreateRoleController,
@@ -23,10 +23,10 @@ rolesRoutes.use(ensureAuthenticated);
 rolesRoutes
   .route('/roles')
   .get(findRolesController.handle)
-  .post(ensureAdmin, createRoleValidation, createRoleController.handle);
+  .post(ensureHasPermission(['admin']), createRoleValidation, createRoleController.handle);
 
 rolesRoutes
   .route('/roles/:id')
   .get(findRoleController.handle)
-  .put(ensureAdmin, updateRoleController.handle)
-  .delete(ensureAdmin, deleteRoleController.handle);
+  .put(ensureHasPermission(['admin']), updateRoleController.handle)
+  .delete(ensureHasPermission(['admin']), deleteRoleController.handle);

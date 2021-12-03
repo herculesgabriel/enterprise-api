@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { ensureAdmin, ensureAuthenticated } from '../../middlewares';
+import { ensureAuthenticated, ensureHasPermission } from '../../middlewares';
 import { createUserValidation, updateUserValidation } from '../../middlewares/validation';
 import {
   CreateUserController,
@@ -35,4 +35,4 @@ usersRoutes
   .put(updateUserValidation, updateUserController.handle)
   .delete(deleteUserController.handle);
 
-usersRoutes.post('/users/roles', ensureAdmin, giveUserRoleController.handle);
+usersRoutes.post('/users/roles', ensureHasPermission(['admin']), giveUserRoleController.handle);
