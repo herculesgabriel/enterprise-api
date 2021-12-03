@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:12
+    container_name: enterprise-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: enterprise-api
+    entrypoint: dockerize -wait tcp://postgres:5432 -timeout 40s ./.docker/entrypoint.sh
+    depends_on:
+      - postgres
+    volumes:
+      - .:/home/node/app
+    ports:
+      - 3333:3333

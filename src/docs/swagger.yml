@@ -1,0 +1,531 @@
+openapi: 3.0.0
+info:
+  title: Enterprise API
+  version: 1.0.0
+  description: '[RAW documentation](/api/docs/swagger.json)'
+servers:
+  - url: http://localhost:3333
+    description: LOCAL
+security:
+  - Token: []
+paths:
+  /login:
+    post:
+      summary: Login
+      description: Log into the API
+      tags:
+        - Main
+      requestBody:
+        description: Login data
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: john@mail.com
+                password:
+                  type: string
+                  example: pass1234
+      responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: $2b$10$bcq81xJRnisFlrKjI4GdyOCfqUbFJt69xKj/D8fBsOEAa8ih3XiJS
+  /users:
+    get:
+      summary: List of users
+      description: Returns a list of all users
+      tags:
+        - Main
+      responses:
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      summary: User
+      description: Create a new user and returns it
+      tags:
+        - Main
+      requestBody:
+        description: User properties
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  example: Hércules
+                last_name:
+                  type: string
+                  example: Gabriel
+                email:
+                  type: string
+                  example: herculesgabriel00@gmail.com
+                password:
+                  type: string
+                  example: pass1234
+      responses:
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /users/{id}:
+    get:
+      summary: User
+      description: Returns a user
+      tags:
+        - Main
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    delete:
+      summary: User
+      description: Delete a user
+      tags:
+        - Main
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '204':
+          description: No content
+    put:
+      summary: User
+      description: Update a user
+      tags:
+        - Main
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        description: User properties
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  example: Hercules
+                last_name:
+                  type: string
+                  example: Gabriel
+                email:
+                  type: string
+                  example: herculesgabriel.dev@gmail.com
+      responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /users/roles:
+    post:
+      summary: Give role
+      description: Give a role to a user
+      tags:
+        - Main
+      requestBody:
+        description: Give role data
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                  example: c5149efc-e0f9-4f31-8b48-b1f53e1f19ff
+                role_id:
+                  type: string
+                  example: f06eeff7-70cd-422b-93e6-b381fdea1cd1
+      responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: role given to user
+  /roles:
+    get:
+      summary: List of roles
+      description: Returns a list of all roles
+      tags:
+        - Main
+      responses:
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+    post:
+      summary: Role
+      description: Create a new role and returns it
+      tags:
+        - Main
+      requestBody:
+        description: Role data
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Salesman
+                description:
+                  type: string
+                  example: Can manage all data from sales module
+                alias:
+                  type: string
+                  example: sales
+      responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+  /roles/{id}:
+    get:
+      summary: Role
+      description: Returns a role
+      tags:
+        - Main
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+    delete:
+      summary: Role
+      description: Delete a role
+      tags:
+        - Main
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '204':
+          description: No content
+    put:
+      summary: Role
+      description: Update a role
+      tags:
+        - Main
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        description: Role data
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Salesperson
+                description:
+                  type: string
+                  example: Can manage most of data from sales module
+                alias:
+                  type: string
+                  example: sales
+      responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+  /sales:
+    get:
+      summary: List of sales
+      description: Returns a list of all sales
+      tags:
+        - Main
+      responses:
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sale'
+    post:
+      summary: Sale
+      description: Create a new sale and returns it
+      tags:
+        - Main
+      requestBody:
+        description: Sale data
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                customer_id:
+                  type: string
+                  example: c5149efc-e0f9-4f31-8b48-b1f53e1f19ff
+                sale_id:
+                  type: string
+                  example: f06eeff7-70cd-422b-93e6-b381fdea1cd1
+                total:
+                  type: string
+                  example: '123.45'
+      responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: f06eeff7-70cd-422b-93e6-b381fdea1cd1
+        first_name:
+          type: string
+          example: John
+        last_name:
+          type: string
+          example: Doe
+        email:
+          type: string
+          example: john@mail.com
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+        created_at:
+          type: string
+          example: 2020-01-01T00:00:00.000Z
+        updated_at:
+          type: string
+          example: 2020-01-01T00:00:00.000Z
+    Role:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 4094e647-7a7f-4179-baa9-1b168bb059c4
+        title:
+          type: string
+          example: Administrator
+        description:
+          type: string
+          example: Can break the whole thing
+        alias:
+          type: string
+          example: admin
+        created_at:
+          type: string
+          example: 2020-01-01T00:00:00.000Z
+        updated_at:
+          type: string
+          example: 2020-01-01T00:00:00.000Z
+    Sale:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 4094e647-7a7f-4179-baa9-1b168bb059c4
+        customer_id:
+          type: string
+          example: c5149efc-e0f9-4f31-8b48-b1f53e1f19ff
+        sale_id:
+          type: string
+          example: f06eeff7-70cd-422b-93e6-b381fdea1cd1
+        total:
+          type: string
+          example: '123.45'
+        created_at:
+          type: string
+          example: 2020-01-01T00:00:00.000Z
+        updated_at:
+          type: string
+          example: 2020-01-01T00:00:00.000Z
+  parameters:
+    id:
+      in: path
+      name: id
+      required: true
+      description: A unique identifier of the resource (UUID)
+      schema:
+        type: string
+        example: 1627ba73-5f42-4940-9878-ebfd2ae0320f
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Token is missing
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: you must provide a title
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: You are not allowed to do this
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: email already taken
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: user not found
+  securitySchemes:
+    Token:
+      type: apiKey
+      in: header
+      name: authorization
+      description: Bearer token
