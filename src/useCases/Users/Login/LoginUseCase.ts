@@ -19,7 +19,7 @@ export class LoginUseCase {
     if (!user) {
       throw new AppError(
         ErrorsMapper.NOT_FOUND,
-        "The e-mail provided doesn't belong to any user"
+        "The email/password is wrong"
       );
     }
 
