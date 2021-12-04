@@ -1,14 +1,19 @@
 import { Router } from 'express';
 
-import { ensureAuthenticated, ensureHasPermission } from '../../middlewares';
-import { createRoleValidation } from '../../middlewares/validation';
+import {
+  ensureAuthenticated,
+  ensureHasPermission,
+  validateParams
+} from '../../middlewares';
+import { createRoleParams } from '../../useCases/Roles/params';
+import { updateRoleParams } from '../../useCases/Roles/UpdateRole/UpdateRoleParams';
 import {
   CreateRoleController,
   DeleteRoleController,
   FindRoleController,
   FindRolesController,
   UpdateRoleController
-} from '../../useCases/Roles';
+} from '../../useCases/Roles/controllers';
 
 export const rolesRoutes = Router();
 
@@ -23,10 +28,18 @@ rolesRoutes.use(ensureAuthenticated);
 rolesRoutes
   .route('/roles')
   .get(findRolesController.handle)
-  .post(ensureHasPermission(['admin']), createRoleValidation, createRoleController.handle);
+  .post(
+    ensureHasPermission(['admin']),
+    validateParams(createRoleParams),
+    createRoleController.handle
+  );
 
 rolesRoutes
   .route('/roles/:id')
   .get(findRoleController.handle)
-  .put(ensureHasPermission(['admin']), updateRoleController.handle)
+  .put(
+    ensureHasPermission(['admin']),
+    validateParams(updateRoleParams),
+    updateRoleController.handle
+  )
   .delete(ensureHasPermission(['admin']), deleteRoleController.handle);

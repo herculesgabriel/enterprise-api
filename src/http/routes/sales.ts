@@ -1,8 +1,15 @@
 import { Router } from 'express';
 
-import { ensureAuthenticated, ensureHasPermission } from '../../middlewares';
-import { createSaleValidation } from '../../middlewares/validation';
-import { CreateSaleController, FindAllSalesController } from '../../useCases/Sales';
+import {
+  ensureAuthenticated,
+  ensureHasPermission,
+  validateParams
+} from '../../middlewares';
+import { createSaleParams } from '../../useCases/Sales/params';
+import {
+  CreateSaleController,
+  FindAllSalesController
+} from '../../useCases/Sales/controllers';
 
 export const salesRoutes = Router();
 
@@ -14,4 +21,4 @@ salesRoutes.use(ensureAuthenticated, ensureHasPermission(['sales']));
 salesRoutes
   .route('/sales')
   .get(findAllSalesController.handle)
-  .post(createSaleValidation, createSaleController.handle);
+  .post(validateParams(createSaleParams), createSaleController.handle);

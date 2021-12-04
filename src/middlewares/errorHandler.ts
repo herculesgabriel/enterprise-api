@@ -9,9 +9,9 @@ export async function errorHandler(
   next: NextFunction
 ) {
   if (error instanceof AppError) {
-    console.error(error.stack);
     return response.status(error.statusCode).json({ error: error.message });
   }
 
+  console.error(error.stack);
   response.status(ErrorsMapper.INTERNAL_SERVER_ERROR).json({ message: error.message });
 }
