@@ -13,5 +13,7 @@ export async function errorHandler(
   }
 
   console.error(error.stack);
-  response.status(ErrorsMapper.INTERNAL_SERVER_ERROR).json({ message: error.message });
+  response
+    .status(ErrorsMapper.INTERNAL_SERVER_ERROR)
+    .json({ message: 'Internal server error' });
 }
